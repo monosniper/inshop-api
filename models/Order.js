@@ -1,6 +1,7 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
 import Shop from "./Shop";
+import Promocode from "./Promocode";
 
 class Order extends Model {}
 

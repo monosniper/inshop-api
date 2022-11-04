@@ -1,25 +1,28 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
 import Shop from "./Shop";
-import Position from "./Position";
 
-class Module extends Model {}
+class Custompage extends Model {}
 
-const model = Module.init({
+const model = Custompage.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    price: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-    },
-    description: {
-        type: DataTypes.TEXT,
-    },
     title: {
         type: DataTypes.STRING(255),
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.STRING(2048),
+    },
+    content: {
+        type: DataTypes.TEXT,
+    },
+    isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
     },
     slug: {
         type: DataTypes.STRING(255),
@@ -28,10 +31,9 @@ const model = Module.init({
     },
 }, {
     sequelize: db,
-    tableName: 'modules'
+    tableName: 'custom_pages'
 })
 
-model.belongsTo(Shop, { as: 'Basket' })
-model.belongsTo(Position, { as: 'Position' })
+model.belongsTo(Shop, { as: 'Shop' })
 
 export default model
