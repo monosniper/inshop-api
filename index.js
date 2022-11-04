@@ -1,19 +1,31 @@
-import * as dotenv from 'dotenv'
-import express from 'express'
-import cors from 'cors'
-import schema from './schema'
-import { graphqlHTTP } from 'express-graphql'
+import {ApolloServer} from "apollo-server";
+import typeDefs from "./schema/type-defs";
+import resolvers from "./schema/resolvers";
+import db from "./db";
+import Domain from "./models/Domain";
+import User from "./models/User";
 
-dotenv.config();
-
-const app = express()
-
-app.use(cors())
-app.use('/graphql', graphqlHTTP({
-    graphiql: true,
-    schema
-}))
-
-app.listen(process.env.APP_PORT, () => {
-    console.log('Server started at http://localhost:' + process.env.APP_PORT)
+const server = new ApolloServer({
+    typeDefs, resolvers
 })
+
+db.sync().then(async () => {
+    // const user = new User({
+    //     username: 'nigga',
+    // })
+
+    // const domain = new Domain({
+    //     name: 'hello',
+    //     UserId: 1,
+    // })
+
+    // await user.save()
+    // await domain.save()
+
+    // console.info(await User.findAll())
+    // console.info(await User.findOne({ where: { id: Number(1) } }))
+
+    server.listen().then(({ url }) => {
+        console.log('Apollo server has started successfully: ' +  url)
+    })
+});
