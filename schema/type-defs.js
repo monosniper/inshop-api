@@ -1,11 +1,23 @@
 import {gql} from "apollo-server";
 
 const typeDefs = gql`
-    type User {
+    scalar JSON
+    scalar JSONObject
+
+    
+    type Shop {
         id: ID!,
-        username: String!
-        email: String!
+        uuid: String
+        options: JSONObject!
+        userId: ID!,
+        domainId: ID,
     }
+
+    input CreateShopInput {
+        options: JSONObject!
+        userId: ID!
+    }
+    
 
     type Domain {
         id: ID!,
@@ -13,15 +25,19 @@ const typeDefs = gql`
         name: String!,
         isSubdomain: Boolean!,
     }
+    
 
-    type Position {
+    type User {
         id: ID!,
-        type: PositionType!
+        username: String!
+        email: String!
+        password: String!
     }
     
     input CreateUserInput {
         username: String!
         email: String!
+        password: String!
     }
 
     input UpdateUserEmailInput {
@@ -29,20 +45,30 @@ const typeDefs = gql`
         email: String!
     }
     
-    type Mutation {
-        createUser(input: CreateUserInput!): User!
-        updateUserEmail(input: UpdateUserEmailInput!): User!
-    }
     
-    type Query {
-        domains: [Domain!]!
-        users: [User!]!
-        user(id: ID!): User!
+    type Position {
+        id: ID!,
+        type: PositionType!
     }
     
     enum PositionType {
         PRODUCT
         SERVICE
+    }
+
+
+    type Mutation {
+        createUser(input: CreateUserInput!): User!
+        updateUserEmail(input: UpdateUserEmailInput!): User!
+
+        createShop(input: CreateShopInput!): Shop!
+    }
+
+    type Query {
+        domains: [Domain!]!
+        users: [User!]!
+        user(id: ID!): User!
+        shops(userId: ID): [Shop]!
     }
 `
 

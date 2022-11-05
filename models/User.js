@@ -1,6 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import bcrypt from "bcrypt";
 import {hashPassword} from "../utils/hashPassword";
 
 class User extends Model {}
@@ -29,7 +28,7 @@ const model = User.init({
     },
 }, {
     sequelize: db,
-    tableName: 'users'
+    tableName: 'users',
 })
 
 User = hashPassword(User)
