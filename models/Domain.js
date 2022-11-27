@@ -1,6 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import User from "./User";
 
 class Domain extends Model {}
 
@@ -22,7 +21,5 @@ const model = Domain.init({
     sequelize: db,
     tableName: 'domains'
 })
-
-model.belongsTo(User, { as: 'User' })
 
 export default model

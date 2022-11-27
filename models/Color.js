@@ -1,27 +1,22 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
 
-class Custompage extends Model {}
+class Color extends Model {}
 
-const model = Custompage.init({
+const model = Color.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    title: {
+    name: {
         type: DataTypes.STRING(255),
-        allowNull: false
     },
     description: {
-        type: DataTypes.STRING(2048),
-    },
-    content: {
         type: DataTypes.TEXT,
     },
-    isActive: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
+    default_value: {
+        type: DataTypes.STRING(255),
     },
     slug: {
         type: DataTypes.STRING(255),
@@ -30,7 +25,7 @@ const model = Custompage.init({
     },
 }, {
     sequelize: db,
-    tableName: 'custom_pages'
+    tableName: 'colors'
 })
 
 export default model

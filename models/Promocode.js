@@ -1,6 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import Shop from "./Shop";
 
 class Promocode extends Model {}
 
@@ -45,7 +44,5 @@ const model = Promocode.init({
     sequelize: db,
     tableName: 'promocodes'
 })
-
-model.belongsTo(Shop, { as: 'Shop' })
 
 export default model

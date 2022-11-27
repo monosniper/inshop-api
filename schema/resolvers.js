@@ -3,6 +3,14 @@ import Domain from "../models/Domain";
 import User from "../models/User";
 import {GraphQLJSON, GraphQLJSONObject} from "graphql-type-json";
 import Shop from "../models/Shop";
+import Module from "../models/Module";
+import Review from "../models/Review";
+import Color from "../models/Color";
+import Position from "../models/Position";
+import ShopFilter from "../models/Filter";
+import Category from "../models/Category";
+import Filter from "../models/Filter";
+import Socialnetwork from "../models/Socialnetwork";
 
 const resolvers = {
     JSON: GraphQLJSON,
@@ -19,10 +27,50 @@ const resolvers = {
             return User.findOne({ where: { id: Number(id) } })
         },
 
+        async reviews(_, { shopId }) {
+            const where = shopId ? { shopId: Number(shopId) } : {}
+
+            return Review.findAll({ where });
+        },
+
         async shops(_, { userId }) {
             const where = userId ? { userId: Number(userId) } : {}
 
             return Shop.findAll({ where });
+        },
+        async shop(_, request, context) {
+            const host = request.host
+            const subdomain = host.split('.')[0]
+
+            const domain = await Domain.findOne({ where: { name: [host, subdomain] } })
+
+            return domain ? await Shop.findOne({
+                where: {domainId: domain.id},
+                include: [
+                    Module,
+                    Color,
+                    Category,
+                    Filter,
+                    Socialnetwork,
+                    {
+                        model: Position,
+                        include: [{
+                            model: Category,
+                            as: "Category"
+                        }]
+                    },
+                ]
+            }) : null;
+        },
+
+        async positions(_, request, context) {
+            return Position.findAll({
+                where: { ShopId: context.currentShop.id },
+                include: [{
+                    model: Category,
+                    as: "Category"
+                }]
+            })
         },
     },
     Mutation: {
@@ -48,12 +96,37 @@ const resolvers = {
         },
 
         createShop: (_, { input }) => {
-            console.log(input)
             const shop = new Shop({
                 ...input
             })
 
             return shop.save();
+        },
+
+        createPosition: async (_, { input }, context) => {
+            const default_options = {
+                inStock: 0,
+            }
+
+            const data = Object.assign({}, default_options, input)
+
+            const position = await Position.create(data)
+
+            context.currentShop.addPosition(position)
+
+            return position
+        },
+
+        createDomain: (_, { input }) => {
+            const domain = new Domain({
+                ...input, name: input.name.toLowerCase()
+            })
+
+            return domain.save();
+        },
+
+        deletePosition: (_, { id }) => {
+            return Position.destroy({ where: { id } });
         },
     }
 }

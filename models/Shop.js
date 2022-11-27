@@ -1,8 +1,5 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, Model, UUIDV4} from "sequelize";
 import db from "../db";
-import User from "./User";
-import Domain from "./Domain";
-import {withUuid} from "../utils/withUuid";
 
 class Shop extends Model {}
 
@@ -15,6 +12,7 @@ const model = Shop.init({
     uuid: {
         type: DataTypes.STRING(255),
         unique: true,
+        defaultValue: UUIDV4,
     },
     options: {
         type: DataTypes.JSON,
@@ -24,10 +22,5 @@ const model = Shop.init({
     sequelize: db,
     tableName: 'shops'
 })
-
-Shop = withUuid(Shop)
-
-model.belongsTo(User, { as: 'User', foreignKey: 'userId' })
-model.belongsTo(Domain, { as: 'Domain', foreignKey: 'domainId' })
 
 export default model

@@ -1,6 +1,5 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, Model, UUIDV4} from "sequelize";
 import db from "../db";
-import Shop from "./Shop";
 
 class Category extends Model {}
 
@@ -12,7 +11,7 @@ const model = Category.init({
     },
     uuid: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        defaultValue: UUIDV4,
         unique: true,
     },
     title: {
@@ -23,7 +22,5 @@ const model = Category.init({
     sequelize: db,
     tableName: 'categories'
 })
-
-model.belongsTo(Shop, { as: 'Shop' })
 
 export default model

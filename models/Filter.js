@@ -1,17 +1,24 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
 
-class Basket extends Model {}
+class Filter extends Model {}
 
-const model = Basket.init({
+const model = Filter.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
+    slug: {
+        type: DataTypes.STRING(255),
+        unique: true,
+    },
+    title: {
+        type: DataTypes.STRING,
+    },
 }, {
     sequelize: db,
-    tableName: 'baskets'
+    tableName: 'filters'
 })
 
 export default model

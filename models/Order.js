@@ -1,7 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import Shop from "./Shop";
-import Promocode from "./Promocode";
 
 class Order extends Model {}
 
@@ -27,8 +25,5 @@ const model = Order.init({
     sequelize: db,
     tableName: 'orders'
 })
-
-model.belongsTo(Shop, { as: 'Shop' })
-model.belongsTo(Promocode, { as: 'Promocode' })
 
 export default model

@@ -1,7 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import Shop from "./Shop";
-import Position from "./Position";
 
 class Module extends Model {}
 
@@ -30,8 +28,5 @@ const model = Module.init({
     sequelize: db,
     tableName: 'modules'
 })
-
-model.belongsTo(Shop, { as: 'Basket' })
-model.belongsTo(Position, { as: 'Position' })
 
 export default model

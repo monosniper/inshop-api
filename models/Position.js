@@ -1,6 +1,5 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, Model, UUIDV4} from "sequelize";
 import db from "../db";
-import Shop from "./Shop";
 
 class Position extends Model {}
 
@@ -12,7 +11,7 @@ const model = Position.init({
     },
     uuid: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        defaultValue: UUIDV4,
         unique: true,
     },
     title: {
@@ -27,27 +26,30 @@ const model = Position.init({
     },
     price: {
         type: DataTypes.INTEGER,
-        allowNull: false,
     },
     discount: {
         type: DataTypes.INTEGER,
     },
-    inStock: {
+    priority: {
         type: DataTypes.INTEGER,
+        defaultValue: 0
     },
-    order: {
+    discount_type: {
+        type: DataTypes.ENUM('PERCENT', 'AMOUNT'),
+    },
+    inStock: {
         type: DataTypes.INTEGER,
     },
     properties: {
         type: DataTypes.JSON,
         defaultValue: {}
     },
+    type: {
+        type: DataTypes.ENUM('PRODUCT', 'SERVICE'),
+    }
 }, {
     sequelize: db,
     tableName: 'positions'
 })
-
-model.belongsTo(Shop, { as: 'Shop' })
-model.belongsTo(Category, { as: 'Category' })
 
 export default model

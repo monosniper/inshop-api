@@ -1,6 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import User from "./User";
 
 class UserAdmin extends Model {}
 
@@ -14,7 +13,5 @@ const model = UserAdmin.init({
     sequelize: db,
     tableName: 'users_admins'
 })
-
-model.belongsTo(User, { as: 'User' })
 
 export default model

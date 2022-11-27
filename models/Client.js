@@ -1,6 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import Shop from "./Shop";
 import {hashPassword} from "../utils/hashPassword";
 
 class Client extends Model {}
@@ -35,7 +34,5 @@ const model = Client.init({
 })
 
 Client = hashPassword(Client)
-
-model.belongsTo(Shop, { as: 'Shop' })
 
 export default model
