@@ -16,7 +16,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 const sequelize = new Sequelize(
     'fc404394_newinshop',
     'fc404394_newinshop',
-    '&di!7Ei45V',
+    'dSa88-9H+u',
     {
         host: '185.104.44.127',
         dialect: 'mysql',
