@@ -48,7 +48,7 @@ const server = new ApolloServer({
                 currentShop = await Shop.findOne({ where: { domainId: domain.id }})
             }
         } catch (e) {
-            console.warn(`Unable to authenticate using auth token: ${authToken}`)
+            console.warn(`Unable to authenticate using auth token: ${authToken}. `, e)
         }
 
         return {
