@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "set NODE_ENV=local&& nodemon -r esm index.js",
+    "dev": "set NODE_ENV=local&& set NODE_PATH= nodemon -r esm index.js",
     "start": "set NODE_ENV=production&& node -r esm index.js"
   },
   "keywords": [],
