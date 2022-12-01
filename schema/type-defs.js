@@ -156,7 +156,7 @@ const typeDefs = gql`
         discount_type: DiscountType
         priority: Int
         properties: JSONObject
-        type: PositionType
+        type: PositionType!
         CategoryId: ID! 
     }
 
@@ -190,6 +190,7 @@ const typeDefs = gql`
 
         createPosition(input: CreatePositionInput!): Position!
         deletePosition(id: ID!): Boolean!
+        deletePositions(ids: [ID!]!): Boolean!
         updatePosition(patch: UpdatePositionPatch!): Boolean!
     }
 

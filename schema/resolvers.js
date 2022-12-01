@@ -69,7 +69,10 @@ const resolvers = {
                 include: [{
                     model: Category,
                     as: "Category"
-                }]
+                }],
+                order: [
+                    ['createdAt', 'DESC'],
+                ]
             })
         },
         async categories(_, request, context) {
@@ -132,6 +135,9 @@ const resolvers = {
         },
         deletePosition: async (_, { id }) => {
             return await Position.destroy({ where: { id } });
+        },
+        deletePositions: async (_, { ids }) => {
+            return await Position.destroy({ where: { id: ids.map(id => Number(id)) } });
         },
         updatePosition: async (_, { patch }) => {
             const updated = await Position.update(patch.set, { where: {id: Number(patch.filters.id)} })
