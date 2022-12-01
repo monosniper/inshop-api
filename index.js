@@ -31,6 +31,7 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: async ({ req }) => {
+        console.log(req.body)
         let authToken = null
         let currentShop = null
 
@@ -44,7 +45,6 @@ const server = new ApolloServer({
 
                 const domain = await Domain.findOne({ where: { name: [host, subdomain] } })
 
-                console.log(domain)
                 currentShop = await Shop.findOne({ where: { domainId: domain.id }})
             }
         } catch (e) {

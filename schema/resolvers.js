@@ -72,6 +72,11 @@ const resolvers = {
                 }]
             })
         },
+        async categories(_, request, context) {
+            return Category.findAll({
+                where: { ShopId: context.currentShop.id },
+            })
+        },
     },
     Mutation: {
         createUser: (_, { input }) => {
@@ -103,6 +108,15 @@ const resolvers = {
             return shop.save();
         },
 
+
+        createDomain: (_, { input }) => {
+            const domain = new Domain({
+                ...input, name: input.name.toLowerCase()
+            })
+
+            return domain.save();
+        },
+
         createPosition: async (_, { input }, context) => {
             const default_options = {
                 inStock: 0,
@@ -116,17 +130,13 @@ const resolvers = {
 
             return position
         },
-
-        createDomain: (_, { input }) => {
-            const domain = new Domain({
-                ...input, name: input.name.toLowerCase()
-            })
-
-            return domain.save();
+        deletePosition: async (_, { id }) => {
+            return await Position.destroy({ where: { id } });
         },
+        updatePosition: async (_, { patch }) => {
+            const updated = await Position.update(patch.set, { where: {id: Number(patch.filters.id)} })
 
-        deletePosition: (_, { id }) => {
-            return Position.destroy({ where: { id } });
+            return updated.length ? updated[0] : false;
         },
     }
 }

@@ -123,7 +123,7 @@ const typeDefs = gql`
         inStock: Int!,
         discount_type: DiscountType,
         priority: Int!,
-        properties: JSONObject!,
+        properties: JSONObject,
         type: PositionType!
         
         Category: Category!
@@ -160,6 +160,25 @@ const typeDefs = gql`
         CategoryId: ID! 
     }
 
+    input UpdatePositionInput {
+        title: String
+        subtitle: String
+        description: String
+        price: Int
+        discount: Int
+        inStock: Int
+        discount_type: DiscountType
+        priority: Int
+        properties: JSONObject
+        type: PositionType
+        CategoryId: ID
+    }
+    
+    input UpdatePositionPatch {
+        filters: JSONObject
+        set: UpdatePositionInput
+    }
+
 
     type Mutation {
         createUser(input: CreateUserInput!): User!
@@ -167,11 +186,11 @@ const typeDefs = gql`
 
         createShop(input: CreateShopInput!): Shop!
 
-        createPosition(input: CreatePositionInput!): Position!
-
         createDomain(input: CreateDomainInput!): Domain!
-        
+
+        createPosition(input: CreatePositionInput!): Position!
         deletePosition(id: ID!): Boolean!
+        updatePosition(patch: UpdatePositionPatch!): Boolean!
     }
 
     type Query {
@@ -182,6 +201,7 @@ const typeDefs = gql`
         shops(userId: ID): [Shop!]!
         shop(host: String!): Shop
         positions: [Position!]!
+        categories: [Category!]!
     }
 `
 
