@@ -11,6 +11,7 @@ import ShopFilter from "../models/Filter";
 import Category from "../models/Category";
 import Filter from "../models/Filter";
 import Socialnetwork from "../models/Socialnetwork";
+import Media from "../models/Media";
 
 const resolvers = {
     JSON: GraphQLJSON,
@@ -69,10 +70,19 @@ const resolvers = {
                 include: [{
                     model: Category,
                     as: "Category"
+                },{
+                    model: Media,
+                    as: "Media"
                 }],
                 order: [
                     ['createdAt', 'DESC'],
                 ]
+            })
+        },
+        async position(_, { id }) {
+            return await Position.findOne({
+                where: { id: Number(id) },
+                include: ['Category', Media]
             })
         },
         async categories(_, request, context) {
@@ -140,7 +150,32 @@ const resolvers = {
             return await Position.destroy({ where: { id: ids.map(id => Number(id)) } });
         },
         updatePosition: async (_, { patch }) => {
-            const updated = await Position.update(patch.set, { where: {id: Number(patch.filters.id)} })
+            const filters = {where: {id: Number(patch.filters.id)}};
+            const updated = await Position.update(patch.set, filters)
+
+            if(updated.length) {
+                if(patch.media) {
+                    const position = await Position.findOne(filters)
+
+                    await position.setMedia([])
+
+                    if(patch.media.thumb_name) {
+                        await position.addMedia(await Media.create({
+                            name: 'thumb',
+                            filename: patch.media.thumb_name
+                        }))
+                    }
+
+                    if(patch.media.images) {
+                        patch.media.images.forEach(async (filename) => {
+                            await position.addMedia(await Media.create({
+                                name: 'image',
+                                filename
+                            }))
+                        })
+                    }
+                }
+            }
 
             return updated.length ? updated[0] : false;
         },

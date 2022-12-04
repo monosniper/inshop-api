@@ -112,6 +112,12 @@ const typeDefs = gql`
     }
     
     
+    type Media {
+        name: String!
+        filename: String!
+    }
+    
+    
     type Position {
         id: ID!,
         uuid: String!,
@@ -125,6 +131,8 @@ const typeDefs = gql`
         priority: Int!,
         properties: JSONObject,
         type: PositionType!
+        
+        Media: [Media!]!
         
         Category: Category!
     }
@@ -177,6 +185,7 @@ const typeDefs = gql`
     input UpdatePositionPatch {
         filters: JSONObject
         set: UpdatePositionInput
+        media: JSONObject
     }
 
 
@@ -201,6 +210,7 @@ const typeDefs = gql`
         user(id: ID!): User
         shops(userId: ID): [Shop!]!
         shop(host: String!): Shop
+        position(id: ID!): Position
         positions: [Position!]!
         categories: [Category!]!
     }

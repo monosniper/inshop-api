@@ -26,6 +26,7 @@ import UserBlock from "./models/UserBlock";
 import ShopFilter from "./models/Filter";
 import Socialnetwork from "./models/Socialnetwork";
 import CryptoJS from 'crypto-js'
+import Media from "./models/Media";
 
 const server = new ApolloServer({
     typeDefs,
@@ -116,6 +117,16 @@ Category.hasMany(Position)
 
 Position.belongsTo(Category, { as: 'Category' })
 Position.belongsTo(Shop, { as: 'Shop' })
+
+Position.hasMany(Media, {
+    foreignKey: 'model_id',
+    constraints: false,
+    scope: {
+        model_type: 'Position'
+    }
+})
+
+Media.belongsTo(Position, { foreignKey: 'model_id', constraints: false });
 
 Banner.belongsTo(Shop, { as: 'Shop' })
 
