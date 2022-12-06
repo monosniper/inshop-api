@@ -38,6 +38,7 @@ const server = new ApolloServer({
 
         try {
             const authToken  = req.headers.authorization.split(' ')[1]
+            console.log(req.headers.authorization, req.body)
             const bytes  = CryptoJS.AES.decrypt(authToken, '123');
             const host = bytes.toString(CryptoJS.enc.Utf8);
 
@@ -159,8 +160,11 @@ UserAdmin.belongsTo(User, { as: 'User' })
 
 UserBlock.belongsTo(User, { as: 'User' })
 
-db.sync().then(async () => {
-    server.listen().then(({ url }) => {
-        console.log('Apollo server has started successfully: ' +  url)
-    })
-});
+// db.sync()
+
+db.authenticate()
+    .then(async () => {
+        server.listen().then(({ url }) => {
+            console.log('Apollo server has started successfully: ' +  url)
+        })
+    });
