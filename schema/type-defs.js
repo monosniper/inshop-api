@@ -61,6 +61,7 @@ const typeDefs = gql`
         userId: ID!,
         domainId: ID,
         
+        Domain: Domain!
         Modules: [Module!]!
         Colors: [Color!]!
         Positions: [Position!]!

@@ -37,7 +37,15 @@ const resolvers = {
         async shops(_, { userId }) {
             const where = userId ? { userId: Number(userId) } : {}
 
-            return Shop.findAll({ where });
+            return Shop.findAll({
+                where,
+                include: [
+                    Module,
+                    Color,
+                    Filter,
+                    'Domain',
+                ]
+            });
         },
         async shop(_, request, context) {
             const host = request.host
@@ -159,19 +167,25 @@ const resolvers = {
 
                     await position.setMedia([])
 
+                    async function addOrCreateMedia(name, filename) {
+                        const filters = { where: {name, filename}};
+
+                        let media = await Media.findOne(filters);
+
+                        if(!media) {
+                            media = await Media.create(filters)
+                        }
+
+                        await position.addMedia(media)
+                    }
+
                     if(patch.media.thumb_name) {
-                        await position.addMedia(await Media.create({
-                            name: 'thumb',
-                            filename: patch.media.thumb_name
-                        }))
+                        await addOrCreateMedia("thumb", patch.media.thumb_name)
                     }
 
                     if(patch.media.images) {
                         patch.media.images.forEach(async (filename) => {
-                            await position.addMedia(await Media.create({
-                                name: 'image',
-                                filename
-                            }))
+                            await addOrCreateMedia("image", filename)
                         })
                     }
                 }

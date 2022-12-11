@@ -12,8 +12,6 @@ const model = User.init({
     },
     username: {
         type: DataTypes.STRING(255),
-        allowNull: false,
-        unique: true
     },
     email: {
         type: DataTypes.STRING,
@@ -26,6 +24,14 @@ const model = User.init({
     rememberToken: {
         type: DataTypes.STRING,
     },
+    created_at: {
+        type: 'TIMESTAMP',
+        field: 'created_at'
+    },
+    updated_at: {
+        type: 'TIMESTAMP',
+        field: 'updated_at'
+    }
 }, {
     sequelize: db,
     tableName: 'users',
