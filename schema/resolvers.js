@@ -181,7 +181,7 @@ const resolvers = {
                         let media = await Media.findOne(filters);
 
                         if(!media) {
-                            media = await Media.create(filters)
+                            media = await Media.create(filters.where)
                         }
 
                         await position.addMedia(media)
@@ -236,7 +236,7 @@ const resolvers = {
                         let media = await Media.findOne(filters);
 
                         if(!media) {
-                            media = await Media.create(filters)
+                            media = await Media.create(filters.where)
                         }
 
                         await category.addMedia(media)
