@@ -79,6 +79,14 @@ Shop.belongsToMany(Socialnetwork, { through: Shop_Social_networks_through });
 Category.belongsTo(Shop, { as: 'Shop' })
 Category.hasMany(Position)
 
+Category.hasMany(Media, {
+    foreignKey: 'model_id',
+    constraints: false,
+    scope: {
+        model_type: 'Category'
+    }
+})
+
 Position.belongsTo(Category, { as: 'Category' })
 Position.belongsTo(Shop, { as: 'Shop' })
 

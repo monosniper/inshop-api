@@ -77,7 +77,11 @@ const resolvers = {
                 where: { ShopId: context.currentShop.id },
                 include: [{
                     model: Category,
-                    as: "Category"
+                    as: "Category",
+                    include: [{
+                        model: Media,
+                        as: "Media"
+                    }]
                 },{
                     model: Media,
                     as: "Media"
@@ -96,6 +100,10 @@ const resolvers = {
         async categories(_, request, context) {
             return Category.findAll({
                 where: { ShopId: context.currentShop.id },
+                include: [{
+                    model: Media,
+                    as: "Media"
+                }]
             })
         },
     },
@@ -187,6 +195,55 @@ const resolvers = {
                         patch.media.images.forEach(async (filename) => {
                             await addOrCreateMedia("image", filename)
                         })
+                    }
+                }
+            }
+
+            return updated.length ? updated[0] : false;
+        },
+        createCategory: async (_, { input }, context) => {
+            const default_options = {
+                inStock: 0,
+            }
+
+            const data = Object.assign({}, default_options, input)
+
+            const category = await Category.create(data)
+
+            context.currentShop.addCategory(category)
+
+            return category
+        },
+        deleteCategory: async (_, { id }) => {
+            return await Category.destroy({ where: { id } });
+        },
+        deleteCategories: async (_, { ids }) => {
+            return await Category.destroy({ where: { id: ids.map(id => Number(id)) } });
+        },
+        updateCategory: async (_, { patch }) => {
+            const filters = {where: {id: Number(patch.filters.id)}};
+            const updated = await Category.update(patch.set, filters)
+
+            if(updated.length) {
+                if(patch.media) {
+                    const category = await Category.findOne(filters)
+
+                    await category.setMedia([])
+
+                    async function addOrCreateMedia(name, filename) {
+                        const filters = { where: {name, filename}};
+
+                        let media = await Media.findOne(filters);
+
+                        if(!media) {
+                            media = await Media.create(filters)
+                        }
+
+                        await category.addMedia(media)
+                    }
+
+                    if(patch.media.image) {
+                        await addOrCreateMedia("image", patch.media.image)
                     }
                 }
             }

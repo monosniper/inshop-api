@@ -11,7 +11,7 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: async ({ req }) => {
-        console.log(req.body)
+        console.log(req.headers)
         let authToken = null
         let currentShop = null
 

@@ -21,6 +21,8 @@ const typeDefs = gql`
         id: ID!,
         uuid: String!,
         title: String!,
+        
+        Media: [Media!]!
     }
 
     
@@ -135,7 +137,7 @@ const typeDefs = gql`
         
         Media: [Media!]!
         
-        Category: Category!
+        Category: Category
     }
     
     enum DiscountType {
@@ -188,6 +190,21 @@ const typeDefs = gql`
         set: UpdatePositionInput
         media: JSONObject
     }
+    
+    
+    input CreateCategoryInput {
+        title: String!
+    }
+
+    input UpdateCategoryInput {
+        title: String
+    }
+    
+    input UpdateCategoryPatch {
+        filters: JSONObject
+        set: UpdateCategoryInput
+        media: JSONObject
+    }
 
 
     type Mutation {
@@ -202,6 +219,11 @@ const typeDefs = gql`
         deletePosition(id: ID!): Boolean!
         deletePositions(ids: [ID!]!): Boolean!
         updatePosition(patch: UpdatePositionPatch!): Boolean!
+        
+        createCategory(input: CreateCategoryInput!): Category!
+        deleteCategory(id: ID!): Boolean!
+        deleteCategories(ids: [ID!]!): Boolean!
+        updateCategory(patch: UpdateCategoryPatch!): Boolean!
     }
 
     type Query {
