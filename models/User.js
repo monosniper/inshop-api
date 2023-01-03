@@ -1,6 +1,5 @@
 import {DataTypes, Model} from "sequelize";
 import db from "../db";
-import {hashPassword} from "../utils/hashPassword";
 
 class User extends Model {}
 
@@ -36,7 +35,5 @@ const model = User.init({
     sequelize: db,
     tableName: 'users',
 })
-
-User = hashPassword(User)
 
 export default model

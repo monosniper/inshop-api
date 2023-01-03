@@ -1,6 +1,5 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, Model, UUIDV4} from "sequelize";
 import db from "../db";
-import {hashPassword} from "../utils/hashPassword";
 
 class Client extends Model {}
 
@@ -9,6 +8,11 @@ const model = Client.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+    },
+    uuid: {
+        type: DataTypes.STRING(255),
+        defaultValue: UUIDV4,
+        unique: true,
     },
     fio: {
         type: DataTypes.STRING,
@@ -32,7 +36,5 @@ const model = Client.init({
     sequelize: db,
     tableName: 'clients'
 })
-
-Client = hashPassword(Client)
 
 export default model

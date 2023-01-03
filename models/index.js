@@ -73,6 +73,7 @@ Shop.hasMany(Position)
 Shop.belongsToMany(Module, { through: Shop_Module_through });
 Shop.belongsToMany(Color, { through: Shop_Color_through });
 Shop.hasMany(Category);
+Shop.hasMany(Client);
 Shop.belongsToMany(ShopFilter, { through: Shop_Filter_through });
 Shop.belongsToMany(Socialnetwork, { through: Shop_Social_networks_through });
 
@@ -98,7 +99,13 @@ Position.hasMany(Media, {
     }
 })
 
-Media.belongsTo(Position, { foreignKey: 'model_id', constraints: false });
+Client.hasMany(Media, {
+    foreignKey: 'model_id',
+    constraints: false,
+    scope: {
+        model_type: 'Client'
+    }
+})
 
 Banner.belongsTo(Shop, { as: 'Shop' })
 

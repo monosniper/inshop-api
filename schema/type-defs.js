@@ -140,6 +140,20 @@ const typeDefs = gql`
         Category: Category
     }
     
+    
+    type Client {
+        id: ID!,
+        uuid: String!,
+        fio: String!,
+        address: String,
+        email: String!,
+        age: Int,
+        phone: String,
+        password: String!,
+        
+        Media: [Media!]!
+    }
+    
     enum DiscountType {
         PERCENT
         AMOUNT
@@ -205,6 +219,31 @@ const typeDefs = gql`
         set: UpdateCategoryInput
         media: JSONObject
     }
+    
+    
+    input CreateClientInput {
+        fio: String!
+        email: String!
+        address: String
+        phone: String
+        age: Int
+        password: String!
+    }
+
+    input UpdateClientInput {
+        fio: String!
+        email: String!
+        address: String
+        phone: String
+        age: Int
+        password: String
+    }
+    
+    input UpdateClientPatch {
+        filters: JSONObject
+        set: UpdateClientInput
+        media: JSONObject
+    }
 
 
     type Mutation {
@@ -224,6 +263,11 @@ const typeDefs = gql`
         deleteCategory(id: ID!): Boolean!
         deleteCategories(ids: [ID!]!): Boolean!
         updateCategory(patch: UpdateCategoryPatch!): Boolean!
+        
+        createClient(input: CreateClientInput!): Client!
+        deleteClient(id: ID!): Boolean!
+        deleteClients(ids: [ID!]!): Boolean!
+        updateClient(patch: UpdateClientPatch!): Boolean!
     }
 
     type Query {
@@ -236,6 +280,7 @@ const typeDefs = gql`
         position(id: ID!): Position
         positions: [Position!]!
         categories: [Category!]!
+        clients: [Client!]!
     }
 `
 
