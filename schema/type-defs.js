@@ -24,6 +24,27 @@ const typeDefs = gql`
         
         Media: [Media!]!
     }
+    
+    
+    type ShopModule {
+        isActive: Boolean!,
+    }
+    
+    
+    type Module {
+        id: ID!,
+        uuid: String!,
+        title: String!,
+        description: String,
+        slug: String!,
+        price: Int,
+        
+        buyed: Boolean
+        isActive: Boolean
+        
+        Media: [Media!]!
+        Dependencies: [Module!]!
+    }
 
     
     type Shop_Color {
@@ -221,6 +242,27 @@ const typeDefs = gql`
     }
     
     
+    input CreateModuleInput {
+        title: String!
+        description: String
+        slug: String!
+        price: Int
+    }
+
+    input UpdateModuleInput {
+        title: String
+        description: String
+        slug: String
+        price: Int
+    }
+    
+    input UpdateModulePatch {
+        filters: JSONObject
+        set: UpdateModuleInput
+        media: JSONObject
+    }
+    
+    
     input CreateClientInput {
         fio: String!
         email: String!
@@ -268,6 +310,14 @@ const typeDefs = gql`
         deleteClient(id: ID!): Boolean!
         deleteClients(ids: [ID!]!): Boolean!
         updateClient(patch: UpdateClientPatch!): Boolean!
+        
+        createModule(input: CreateModuleInput!): Module!
+        deleteModule(id: ID!): Boolean!
+        deleteModules(ids: [ID!]!): Boolean!
+        updateModule(patch: UpdateModulePatch!): Boolean!
+        activateModule(id: ID!): Boolean!
+        deactivateModule(id: ID!): Boolean!
+        buyModule(id: ID!): Boolean!
     }
 
     type Query {
@@ -275,11 +325,13 @@ const typeDefs = gql`
         domains: [Domain!]!
         users: [User!]!
         user(id: ID!): User
+        module(slug: String!): Module
         shops(userId: ID): [Shop!]!
         shop(host: String!): Shop
         position(id: ID!): Position
         positions: [Position!]!
         categories: [Category!]!
+        modules: [Module!]!
         clients: [Client!]!
     }
 `

@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Order extends Model {}
@@ -21,9 +21,13 @@ const model = Order.init({
         type: DataTypes.JSON,
         defaultValue: {}
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'orders'
+    tableName: 'orders',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

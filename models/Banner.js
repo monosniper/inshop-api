@@ -1,4 +1,4 @@
-import {DataTypes, Model, UUIDV4} from "sequelize";
+import {DataTypes, Model, DATE, UUIDV4} from "sequelize";
 import db from "../db";
 
 class Banner extends Model {}
@@ -52,9 +52,13 @@ const model = Banner.init({
         defaultValue: UUIDV4,
         unique: true,
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'banners'
+    tableName: 'banners',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

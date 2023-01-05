@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Review extends Model {}
@@ -26,9 +26,13 @@ const model = Review.init({
     date: {
         type: DataTypes.DATE,
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'reviews'
+    tableName: 'reviews',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

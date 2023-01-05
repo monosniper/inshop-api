@@ -6,12 +6,12 @@ import Shop from "./models/Shop";
 import Domain from "./models/Domain";
 import CryptoJS from 'crypto-js'
 import "./models";
+import Module from "./models/Module";
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
     context: async ({ req }) => {
-        console.log(req.headers)
         let authToken = null
         let currentShop = null
 

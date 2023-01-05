@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Promocode extends Model {}
@@ -39,10 +39,14 @@ const model = Promocode.init({
     },
     actual_until: {
         type: DataTypes.DATE,
-    }
+    },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'promocodes'
+    tableName: 'promocodes',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Media extends Model {}
@@ -21,9 +21,13 @@ const model = Media.init({
     name: {
         type: DataTypes.STRING(255),
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'media'
+    tableName: 'media',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

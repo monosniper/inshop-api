@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Custompage extends Model {}
@@ -28,9 +28,13 @@ const model = Custompage.init({
         allowNull: false,
         unique: true,
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'custom_pages'
+    tableName: 'custom_pages',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

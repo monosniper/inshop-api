@@ -1,4 +1,4 @@
-import {DataTypes, Model, UUIDV4} from "sequelize";
+import {DataTypes, DATE, Model, UUIDV4} from "sequelize";
 import db from "../db";
 
 class Position extends Model {}
@@ -46,10 +46,14 @@ const model = Position.init({
     },
     type: {
         type: DataTypes.ENUM('PRODUCT', 'SERVICE'),
-    }
+    },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'positions'
+    tableName: 'positions',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

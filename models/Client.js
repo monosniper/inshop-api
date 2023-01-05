@@ -1,4 +1,4 @@
-import {DataTypes, Model, UUIDV4} from "sequelize";
+import {DataTypes, DATE, Model, UUIDV4} from "sequelize";
 import db from "../db";
 
 class Client extends Model {}
@@ -32,9 +32,13 @@ const model = Client.init({
     password: {
         type: DataTypes.STRING,
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'clients'
+    tableName: 'clients',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

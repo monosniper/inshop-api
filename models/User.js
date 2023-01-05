@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class User extends Model {}
@@ -23,17 +23,13 @@ const model = User.init({
     rememberToken: {
         type: DataTypes.STRING,
     },
-    created_at: {
-        type: 'TIMESTAMP',
-        field: 'created_at'
-    },
-    updated_at: {
-        type: 'TIMESTAMP',
-        field: 'updated_at'
-    }
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
     tableName: 'users',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

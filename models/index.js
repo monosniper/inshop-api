@@ -34,7 +34,7 @@ const Shop_Color_through = Shop_Color.init({
 
 class Shop_Module extends Model {}
 
-const Shop_Module_through = Shop_Module.init({
+export const Shop_Module_through = Shop_Module.init({
     isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
@@ -49,7 +49,7 @@ class Shop_Filter extends Model {}
 const Shop_Filter_through = Shop_Filter.init({
     isActive: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true
+        defaultValue: false
     }
 }, {
     sequelize,
@@ -88,6 +88,28 @@ Category.hasMany(Media, {
     }
 })
 
+ModuleDependency.belongsTo(Module, { as: 'Module' })
+ModuleDependency.belongsTo(Module, { as: 'Dependency', foreignKey: 'dependency_id' })
+
+Module.hasMany(Media, {
+    foreignKey: 'model_id',
+    constraints: false,
+    scope: {
+        model_type: 'Module'
+    }
+})
+
+Module.belongsToMany(Module, { through: ModuleDependency, as: 'Dependencies' });
+// Module.belongsTo(Shop_Module, { as: 'ShopModule', targetKey: 'module_id', foreignKey: 'id' })
+
+// Module.hasMany(ModuleDependency, {
+//     foreignKey: 'module_id',
+//     constraints: false,
+//     scope: {
+//         model_type: 'Module'
+//     }
+// })
+
 Position.belongsTo(Category, { as: 'Category' })
 Position.belongsTo(Shop, { as: 'Shop' })
 
@@ -120,9 +142,6 @@ Client.belongsTo(Shop, { as: 'Shop' })
 CustomPage.belongsTo(Shop, { as: 'Shop' })
 
 Domain.belongsTo(User, { as: 'User' })
-
-ModuleDependency.belongsTo(Module, { as: 'Module' })
-ModuleDependency.belongsTo(Module, { as: 'Dependency', foreignKey: 'dependency_id' })
 
 Order.belongsTo(Shop, { as: 'Shop' })
 Order.belongsTo(Promocode, { as: 'Promocode' })

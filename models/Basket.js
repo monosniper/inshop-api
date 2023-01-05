@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Basket extends Model {}
@@ -9,9 +9,13 @@ const model = Basket.init({
         primaryKey: true,
         autoIncrement: true,
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'baskets'
+    tableName: 'baskets',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

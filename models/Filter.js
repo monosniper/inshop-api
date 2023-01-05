@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Filter extends Model {}
@@ -16,9 +16,13 @@ const model = Filter.init({
     title: {
         type: DataTypes.STRING,
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'filters'
+    tableName: 'filters',
+    timestamps: true,
+    underscored: true
 })
 
 export default model

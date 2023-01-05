@@ -1,4 +1,4 @@
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, DATE, Model} from "sequelize";
 import db from "../db";
 
 class Color extends Model {}
@@ -23,9 +23,13 @@ const model = Color.init({
         allowNull: false,
         unique: true,
     },
+    createdAt: { type: DATE, field: 'created_at' },
+    updatedAt: { type: DATE, field: 'updated_at' },
 }, {
     sequelize: db,
-    tableName: 'colors'
+    tableName: 'colors',
+    timestamps: true,
+    underscored: true
 })
 
 export default model
