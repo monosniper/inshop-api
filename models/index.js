@@ -14,6 +14,7 @@ import Banner from "./Banner";
 import Basket from "./Basket";
 import Client from "./Client";
 import BasketItem from "./BasketItem";
+import Feedback from "./Feedback";
 import CustomPage from "./CustomPage";
 import ModuleDependency from "./ModuleDependency";
 import Order from "./Order";

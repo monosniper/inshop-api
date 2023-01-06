@@ -17,19 +17,23 @@ const server = new ApolloServer({
 
         try {
             const authToken  = req.headers.authorization.split(' ')[1]
-            console.log(req.headers.authorization, req.body)
-            const bytes  = CryptoJS.AES.decrypt(authToken, '123');
-            const host = bytes.toString(CryptoJS.enc.Utf8);
 
-            if (authToken) {
-                const subdomain = host.split('.')[0]
+            if(authToken) {
+                const bytes  = CryptoJS.AES.decrypt(authToken, '123');
+                const host = bytes.toString(CryptoJS.enc.Utf8);
 
-                const domain = await Domain.findOne({ where: { name: [host, subdomain] } })
+                if (authToken) {
+                    const subdomain = host.split('.')[0]
 
-                currentShop = await Shop.findOne({ where: { domainId: domain.id }})
+                    const domain = await Domain.findOne({ where: { name: [host, subdomain] } })
+
+                    currentShop = await Shop.findOne({ where: { domainId: domain.id }})
+                }
+            } else {
+                console.warn(`Unable to authenticate using auth token: ${authToken}. `, e)
             }
         } catch (e) {
-            console.warn(`Unable to authenticate using auth token: ${authToken}. `, e)
+            console.warn(`Server warn: `, e)
         }
 
         return {
