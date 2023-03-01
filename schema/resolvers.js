@@ -1,4 +1,3 @@
-import {users} from "../mock-db";
 import Domain from "../models/Domain";
 import User from "../models/User";
 import {GraphQLJSON, GraphQLJSONObject} from "graphql-type-json";
@@ -34,7 +33,6 @@ const resolvers = {
 
         async module(_, { slug }, context) {
             let buyed_modules = await context.currentShop.getModules()
-            buyed_modules = buyed_modules
             const buyed_modules_ids = buyed_modules.map(module => module.id)
 
             const module_ = await Module.findOne({
@@ -77,6 +75,8 @@ const resolvers = {
             } else if (buyed_modules_ids.includes(module_.id)) {
                 module_.buyed = true
             }
+
+            module_.options = shop_module.options
 
             return module_
         },
@@ -168,35 +168,62 @@ const resolvers = {
                 }]
             })
         },
-        async modules(_, request, context) {
-            const all_modules = await Module.findAll({
-                include: [
-                    {
-                        model: Media,
-                        as: "Media"
-                    },
-                    {
-                        model: Module,
-                        as: "Dependencies",
-                        include: [
-                            {
-                                model: Module,
-                                as: "Dependencies",
-                            }
-                        ]
+        async modules(_, { buyed }, context) {
+            if(buyed) {
+                const modules = await context.currentShop.getModules({
+                    include: [
+                        {
+                            model: Media,
+                            as: "Media"
+                        },
+                        {
+                            model: Module,
+                            as: "Dependencies",
+                            include: [
+                                {
+                                    model: Module,
+                                    as: "Dependencies",
+                                }
+                            ]
+                        }
+                    ]
+                })
+
+                return modules.map(module => {
+                    module.isActive = module.Shop_Module.isActive
+                    return module
+                })
+            }
+            else {
+                const all_modules = await Module.findAll({
+                    include: [
+                        {
+                            model: Media,
+                            as: "Media"
+                        },
+                        {
+                            model: Module,
+                            as: "Dependencies",
+                            include: [
+                                {
+                                    model: Module,
+                                    as: "Dependencies",
+                                }
+                            ]
+                        }
+                    ]
+                });
+
+                let buyed_modules = await context.currentShop.getModules()
+                buyed_modules = buyed_modules.map(module => module.id)
+
+                return all_modules.map(async (module) => {
+                    if (buyed_modules.includes(module.id)) {
+                        module.buyed = true
                     }
-                ]
-            });
-
-            let buyed_modules = await context.currentShop.getModules()
-            buyed_modules = buyed_modules.map(module => module.id)
-
-            return all_modules.map(async (module) => {
-                if (buyed_modules.includes(module.id)) {
-                    module.buyed = true
-                }
-                return module;
-            })
+                    return module;
+                })
+            }
         },
     },
     Mutation: {
@@ -210,17 +237,17 @@ const resolvers = {
             return user.save();
         },
         updateUserEmail: (_, { input }) => {
-            const { id, email } = input
-
-            users.map(user => {
-                if(user.id === id) {
-                    user.email = email
-                }
-
-                return user;
-            })
-
-            return users.find(user => user.id === Number(id));
+            // const { id, email } = input
+            //
+            // users.map(user => {
+            //     if(user.id === id) {
+            //         user.email = email
+            //     }
+            //
+            //     return user;
+            // })
+            //
+            // return users.find(user => user.id === Number(id));
         },
 
         createShop: (_, { input }) => {
@@ -409,6 +436,14 @@ const resolvers = {
             const buyed = await context.currentShop.addModule(id)
 
             return !!buyed
+        },
+
+        saveModule: async (_, { input }, context) => {
+            const {id, options} = input
+            const modules = await context.currentShop.getModules({where: {id}})
+            const updated = await modules[0].Shop_Module.update({options})
+
+            return !!updated;
         },
 
         createClient: async (_, { input }, context) => {

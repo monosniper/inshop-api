@@ -39,6 +39,10 @@ export const Shop_Module_through = Shop_Module.init({
     isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
+    },
+    options: {
+        type: DataTypes.JSON,
+        defaultValue: {}
     }
 }, {
     sequelize,

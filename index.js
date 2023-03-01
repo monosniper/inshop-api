@@ -14,7 +14,7 @@ const server = new ApolloServer({
     context: async ({ req }) => {
         let authToken = null
         let currentShop = null
-
+        console.log(req.body)
         try {
             const authToken  = req.headers.authorization.split(' ')[1]
 

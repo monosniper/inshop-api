@@ -13,6 +13,7 @@ const typeDefs = gql`
         description: String!,
         title: String!,
         slug: String!,
+        options: JSONObject,
         Shop_Module: Shop_Module
     }
     
@@ -27,6 +28,7 @@ const typeDefs = gql`
     
     
     type ShopModule {
+        options: JSONObject,
         isActive: Boolean!,
     }
     
@@ -38,6 +40,10 @@ const typeDefs = gql`
         description: String,
         slug: String!,
         price: Int,
+        
+        options: JSONObject,
+        default_options: JSONObject,
+        Shop_Module: Shop_Module
         
         buyed: Boolean
         isActive: Boolean
@@ -286,6 +292,11 @@ const typeDefs = gql`
         set: UpdateClientInput
         media: JSONObject
     }
+    
+    input SaveModuleInput {
+        id: ID!
+        options: JSONObject!
+    }
 
 
     type Mutation {
@@ -318,6 +329,7 @@ const typeDefs = gql`
         activateModule(id: ID!): Boolean!
         deactivateModule(id: ID!): Boolean!
         buyModule(id: ID!): Boolean!
+        saveModule(input: SaveModuleInput!): Boolean!
     }
 
     type Query {
@@ -331,7 +343,7 @@ const typeDefs = gql`
         position(id: ID!): Position
         positions: [Position!]!
         categories: [Category!]!
-        modules: [Module!]!
+        modules(buyed: Boolean): [Module!]!
         clients: [Client!]!
     }
 `

@@ -23,6 +23,10 @@ const model = Module.init({
         allowNull: false,
         unique: true,
     },
+    default_options: {
+        type: DataTypes.JSON,
+        defaultValue: {}
+    },
     description: DataTypes.TEXT,
     title: DataTypes.STRING(255),
     createdAt: { type: DATE, field: 'created_at' },
