@@ -90,18 +90,14 @@ const typeDefs = gql`
         userId: ID!,
         domainId: ID,
         
-        Domain: Domain!
+        Domain: Domain
         Modules: [Module!]!
         Colors: [Color!]!
         Positions: [Position!]!
         Categories: [Category!]!
         Filters: [Filter!]!
         Socialnetworks: [Socialnetwork!]!
-    }
-
-    input CreateShopInput {
-        options: JSONObject!
-        userId: ID!
+        Media: [Media!]!
     }
     
 
@@ -193,6 +189,7 @@ const typeDefs = gql`
 
 
     input CreateDomainInput {
+        userId: ID!
         name: String!
         isSubdomain: Boolean
     }
@@ -293,6 +290,25 @@ const typeDefs = gql`
         media: JSONObject
     }
     
+    input CreateShopInput {
+        userId: ID!
+        domainId: ID!
+        options: JSONObject!
+    }
+    
+    input UpdateShopInput {
+        domainId: ID!
+        options: JSONObject!
+    }
+    
+    input UpdateShopPatch {
+        filters: JSONObject
+        set: UpdateShopInput
+        media: JSONObject
+    }
+    
+    
+    
     input SaveModuleInput {
         id: ID!
         options: JSONObject!
@@ -303,9 +319,8 @@ const typeDefs = gql`
         createUser(input: CreateUserInput!): User!
         updateUserEmail(input: UpdateUserEmailInput!): User!
 
-        createShop(input: CreateShopInput!): Shop!
-
         createDomain(input: CreateDomainInput!): Domain!
+        deleteDomain(id: ID!): Boolean!
 
         createPosition(input: CreatePositionInput!): Position!
         deletePosition(id: ID!): Boolean!
@@ -322,6 +337,10 @@ const typeDefs = gql`
         deleteClients(ids: [ID!]!): Boolean!
         updateClient(patch: UpdateClientPatch!): Boolean!
         
+        createShop(input: CreateShopInput!): Shop!
+        deleteShop(id: ID!): Boolean!
+        updateShop(patch: UpdateShopPatch!): Boolean!
+        
         createModule(input: CreateModuleInput!): Module!
         deleteModule(id: ID!): Boolean!
         deleteModules(ids: [ID!]!): Boolean!
@@ -334,17 +353,20 @@ const typeDefs = gql`
 
     type Query {
         reviews(shopId: ID): [Review!]!
-        domains: [Domain!]!
         users: [User!]!
         user(id: ID!): User
         module(slug: String!): Module
         shops(userId: ID): [Shop!]!
         shop(host: String!): Shop
         position(id: ID!): Position
-        positions: [Position!]!
-        categories: [Category!]!
-        modules(buyed: Boolean): [Module!]!
+        positions(query: String, userId: ID, limit: Int): [Position!]!
+        categories(query: String, userId: ID, limit: Int): [Category!]!
+        modules(query: String, limit: Int, buyed: Boolean): [Module!]!
         clients: [Client!]!
+        domains(
+            userId: ID
+            notUsed: Boolean
+        ): [Domain!]
     }
 `
 

@@ -82,6 +82,14 @@ Shop.hasMany(Client);
 Shop.belongsToMany(ShopFilter, { through: Shop_Filter_through });
 Shop.belongsToMany(Socialnetwork, { through: Shop_Social_networks_through });
 
+Shop.hasMany(Media, {
+    foreignKey: 'model_id',
+    constraints: false,
+    scope: {
+        model_type: 'Shop'
+    }
+})
+
 Category.belongsTo(Shop, { as: 'Shop' })
 Category.hasMany(Position)
 
@@ -146,7 +154,7 @@ Client.belongsTo(Shop, { as: 'Shop' })
 
 CustomPage.belongsTo(Shop, { as: 'Shop' })
 
-Domain.belongsTo(User, { as: 'User' })
+Domain.belongsTo(User, { as: 'User', foreignKey: 'userId' })
 
 Order.belongsTo(Shop, { as: 'Shop' })
 Order.belongsTo(Promocode, { as: 'Promocode' })
@@ -161,3 +169,5 @@ Review.belongsTo(Shop, { as: 'Shop' })
 UserAdmin.belongsTo(User, { as: 'User' })
 
 UserBlock.belongsTo(User, { as: 'User' })
+
+User.hasMany(Shop);

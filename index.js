@@ -6,7 +6,7 @@ import Shop from "./models/Shop";
 import Domain from "./models/Domain";
 import CryptoJS from 'crypto-js'
 import "./models";
-import Module from "./models/Module";
+import User from "./models/User";
 
 const server = new ApolloServer({
     typeDefs,
@@ -14,7 +14,12 @@ const server = new ApolloServer({
     context: async ({ req }) => {
         let authToken = null
         let currentShop = null
+        let currentUser = null
+
         console.log(req.body)
+
+        const userId = req.body.variables.userId
+
         try {
             const authToken  = req.headers.authorization.split(' ')[1]
 
@@ -27,7 +32,8 @@ const server = new ApolloServer({
 
                     const domain = await Domain.findOne({ where: { name: [host, subdomain] } })
 
-                    currentShop = await Shop.findOne({ where: { domainId: domain.id }})
+                    if (domain) currentShop = await Shop.findOne({ where: { domainId: domain.id }})
+                    if (userId) currentUser = await User.findOne({ where: { id: userId }})
                 }
             } else {
                 console.warn(`Unable to authenticate using auth token: ${authToken}. `, e)
@@ -38,7 +44,8 @@ const server = new ApolloServer({
 
         return {
             authToken,
-            currentShop
+            currentShop,
+            currentUser,
         }
     }
 })

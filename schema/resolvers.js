@@ -15,15 +15,12 @@ import Media from "../models/Media";
 import {hashPassword} from "../utils/hashPassword";
 import ModuleDependency from "../models/ModuleDependency";
 import {Shop_Module_through as Shop_Module} from "../models";
+import Sequelize, {Op} from "sequelize";
 
 const resolvers = {
     JSON: GraphQLJSON,
     JSONObject: GraphQLJSONObject,
     Query: {
-        async domains() {
-            return Domain.findAll();
-        },
-
         async users() {
             return User.findAll();
         },
@@ -97,8 +94,21 @@ const resolvers = {
                     Color,
                     Filter,
                     'Domain',
+                    Media
                 ]
             });
+        },
+        async domains(_, { userId, notUsed=false }) {
+            const where = {}
+
+            if(userId) where.user_id = Number(userId)
+            if(notUsed) {
+                const shops = await Shop.findAll({where: {user_id: Number(userId)}})
+                const used_domain_ids = shops.map(shop => shop.domainId)
+                if(used_domain_ids.length) where.id = {[Sequelize.Op.notIn]: used_domain_ids}
+            }
+
+            return Domain.findAll({ where });
         },
         async shop(_, request, context) {
             const host = request.host
@@ -110,6 +120,7 @@ const resolvers = {
                 where: {domainId: domain.id},
                 include: [
                     Module,
+                    Media,
                     Color,
                     Category,
                     Filter,
@@ -126,9 +137,18 @@ const resolvers = {
         },
 
         async positions(_, request, context) {
+            const { query, userId, limit } = request
+            const where = context.currentShop ? { ShopId: context.currentShop.id } : {}
+
+            if(query && userId) {
+                const userShops = await context.currentUser.getShops()
+
+                where.shop_id = {[Op.in]: userShops.map(shop => shop.id)}
+                where.title = {[Op.like]: `%${query}%`}
+            }
+
             return Position.findAll({
-                where: { ShopId: context.currentShop.id },
-                include: [{
+                where, limit, include: [{
                     model: Category,
                     as: "Category",
                     include: [{
@@ -151,9 +171,18 @@ const resolvers = {
             })
         },
         async categories(_, request, context) {
+            const { query, userId, limit } = request
+            const where = context.currentShop ? { ShopId: context.currentShop.id } : {}
+
+            if(query && userId) {
+                const userShops = await context.currentUser.getShops()
+
+                where.shop_id = {[Op.in]: userShops.map(shop => shop.id)}
+                where.title = {[Op.like]: `%${query}%`}
+            }
+
             return Category.findAll({
-                where: { ShopId: context.currentShop.id },
-                include: [{
+                where, include: [{
                     model: Media,
                     as: "Media"
                 }]
@@ -168,25 +197,34 @@ const resolvers = {
                 }]
             })
         },
-        async modules(_, { buyed }, context) {
-            if(buyed) {
-                const modules = await context.currentShop.getModules({
+        async modules(_, request, context) {
+            const include = [
+                {
+                    model: Media,
+                    as: "Media"
+                },
+                {
+                    model: Module,
+                    as: "Dependencies",
                     include: [
-                        {
-                            model: Media,
-                            as: "Media"
-                        },
                         {
                             model: Module,
                             as: "Dependencies",
-                            include: [
-                                {
-                                    model: Module,
-                                    as: "Dependencies",
-                                }
-                            ]
                         }
                     ]
+                }
+            ]
+
+            const { buyed, query, limit } = request
+            const where = {}
+
+            if(query) {
+                where.title = {[Op.like]: `%${query}%`}
+            }
+
+            if(buyed) {
+                const modules = await context.currentShop.getModules({
+                    where, include, limit
                 })
 
                 return modules.map(module => {
@@ -196,33 +234,22 @@ const resolvers = {
             }
             else {
                 const all_modules = await Module.findAll({
-                    include: [
-                        {
-                            model: Media,
-                            as: "Media"
-                        },
-                        {
-                            model: Module,
-                            as: "Dependencies",
-                            include: [
-                                {
-                                    model: Module,
-                                    as: "Dependencies",
-                                }
-                            ]
-                        }
-                    ]
+                    where, include, limit
                 });
 
-                let buyed_modules = await context.currentShop.getModules()
-                buyed_modules = buyed_modules.map(module => module.id)
+                if(context.currentShop) {
+                    let buyed_modules = await context.currentShop.getModules()
+                    buyed_modules = buyed_modules.map(module => module.id)
 
-                return all_modules.map(async (module) => {
-                    if (buyed_modules.includes(module.id)) {
-                        module.buyed = true
-                    }
-                    return module;
-                })
+                    return all_modules.map(async (module) => {
+                        if (buyed_modules.includes(module.id)) {
+                            module.buyed = true
+                        }
+                        return module;
+                    })
+                } else {
+                    return all_modules
+                }
             }
         },
     },
@@ -250,12 +277,45 @@ const resolvers = {
             // return users.find(user => user.id === Number(id));
         },
 
-        createShop: (_, { input }) => {
-            const shop = new Shop({
-                ...input
-            })
+        createShop: async (_, { input }) => {
+            const default_options = {}
+            const data = Object.assign({}, default_options, input)
 
-            return shop.save();
+            return await Shop.create(data)
+        },
+        deleteShop: async (_, { id }) => {
+            return await Shop.destroy({ where: { id } });
+        },
+        updateShop: async (_, { patch }) => {
+            const filters = {where: {id: Number(patch.filters.id)}};
+
+            const updated = await Shop.update(patch.set, filters)
+
+            if(updated.length) {
+                if(patch.media) {
+                    const shop = await Shop.findOne(filters)
+
+                    await shop.setMedia([])
+
+                    async function addOrCreateMedia(name, filename) {
+                        const filters = { where: {name, filename}};
+
+                        let media = await Media.findOne(filters);
+
+                        if(!media) {
+                            media = await Media.create(filters.where)
+                        }
+
+                        await client.addMedia(media)
+                    }
+
+                    if(patch.media.avatar) {
+                        await addOrCreateMedia("avatar", patch.media.avatar)
+                    }
+                }
+            }
+
+            return updated.length ? updated[0] : false;
         },
 
 
@@ -265,6 +325,9 @@ const resolvers = {
             })
 
             return domain.save();
+        },
+        deleteDomain: async (_, { id }) => {
+            return await Domain.destroy({ where: { id } });
         },
 
         createPosition: async (_, { input }, context) => {
