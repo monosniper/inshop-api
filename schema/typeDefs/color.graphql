@@ -1,0 +1,11 @@
+type Shop_Color {
+    value: String,
+}
+type Color {
+    id: ID!,
+    name: String!,
+    description: String!,
+    default_value: String,
+    slug: String!,
+    Shop_Color: Shop_Color
+}

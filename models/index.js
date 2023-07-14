@@ -7,6 +7,7 @@ import Position from "./Position";
 import Module from "./Module";
 import Color from "./Color";
 import Category from "./Category";
+import Tag from "./Tag";
 import ShopFilter from "./Filter";
 import Socialnetwork from "./Socialnetwork";
 import Media from "./Media";
@@ -15,8 +16,9 @@ import Basket from "./Basket";
 import Client from "./Client";
 import BasketItem from "./BasketItem";
 import Feedback from "./Feedback";
-import CustomPage from "./CustomPage";
+import Custompage from "./CustomPage";
 import ModuleDependency from "./ModuleDependency";
+import PositionTag from "./PositionTag";
 import Order from "./Order";
 import Promocode from "./Promocode";
 import PromocodeActivation from "./PromocodeActivation";
@@ -78,9 +80,11 @@ Shop.hasMany(Position)
 Shop.belongsToMany(Module, { through: Shop_Module_through });
 Shop.belongsToMany(Color, { through: Shop_Color_through });
 Shop.hasMany(Category);
+Shop.hasMany(Tag);
 Shop.hasMany(Client);
 Shop.belongsToMany(ShopFilter, { through: Shop_Filter_through });
 Shop.belongsToMany(Socialnetwork, { through: Shop_Social_networks_through });
+Shop.hasMany(Custompage);
 
 Shop.hasMany(Media, {
     foreignKey: 'model_id',
@@ -101,6 +105,17 @@ Category.hasMany(Media, {
     }
 })
 
+Tag.belongsTo(Shop, { as: 'Shop' })
+Tag.belongsToMany(Position, { through: PositionTag })
+
+Tag.hasMany(Media, {
+    foreignKey: 'model_id',
+    constraints: false,
+    scope: {
+        model_type: 'Tag'
+    }
+})
+
 ModuleDependency.belongsTo(Module, { as: 'Module' })
 ModuleDependency.belongsTo(Module, { as: 'Dependency', foreignKey: 'dependency_id' })
 
@@ -113,17 +128,9 @@ Module.hasMany(Media, {
 })
 
 Module.belongsToMany(Module, { through: ModuleDependency, as: 'Dependencies' });
-// Module.belongsTo(Shop_Module, { as: 'ShopModule', targetKey: 'module_id', foreignKey: 'id' })
-
-// Module.hasMany(ModuleDependency, {
-//     foreignKey: 'module_id',
-//     constraints: false,
-//     scope: {
-//         model_type: 'Module'
-//     }
-// })
 
 Position.belongsTo(Category, { as: 'Category' })
+Position.belongsToMany(Tag, { through: PositionTag, as: 'Tags' });
 Position.belongsTo(Shop, { as: 'Shop' })
 
 Position.hasMany(Media, {
@@ -152,7 +159,7 @@ BasketItem.belongsTo(Position, { as: 'Position' })
 
 Client.belongsTo(Shop, { as: 'Shop' })
 
-CustomPage.belongsTo(Shop, { as: 'Shop' })
+Custompage.belongsTo(Shop, { as: 'Shop' })
 
 Domain.belongsTo(User, { as: 'User', foreignKey: 'userId' })
 
@@ -170,4 +177,4 @@ UserAdmin.belongsTo(User, { as: 'User' })
 
 UserBlock.belongsTo(User, { as: 'User' })
 
-User.hasMany(Shop);
+// User.hasMany(Shop);

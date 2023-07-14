@@ -1,0 +1,5 @@
+type Media {
+    name: String!
+    filename: String!
+}
+

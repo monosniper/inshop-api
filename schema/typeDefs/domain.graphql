@@ -1,0 +1,24 @@
+type Domain {
+    id: ID!,
+    user_id: ID!,
+    name: String!,
+    isSubdomain: Boolean!,
+}
+
+input CreateDomainInput {
+    userId: ID!
+    name: String!
+    isSubdomain: Boolean
+}
+
+type Mutation {
+    createDomain(input: CreateDomainInput!): Domain!
+    deleteDomain(id: ID!): Boolean!
+}
+
+type Query {
+    domains(
+        userId: ID
+        notUsed: Boolean
+    ): [Domain!]
+}

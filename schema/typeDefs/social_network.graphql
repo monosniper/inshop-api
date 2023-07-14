@@ -1,0 +1,8 @@
+type Shop_Social_network {
+    value: String,
+}
+type Socialnetwork {
+    id: ID!,
+    slug: String!
+    Shop_Social_network: Shop_Social_network
+}

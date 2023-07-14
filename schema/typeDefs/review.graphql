@@ -1,0 +1,12 @@
+type Review {
+    id: ID!,
+    author_name: String!
+    author_url: String!
+    content: String!
+    rating: Int!
+    date: String!
+}
+
+type Query {
+    reviews(shopId: ID): [Review!]!
+}

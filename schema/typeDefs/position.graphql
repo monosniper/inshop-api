@@ -1,0 +1,82 @@
+enum DiscountType {
+    PERCENT
+    AMOUNT
+}
+
+enum PositionType {
+    PRODUCT
+    SERVICE
+}
+
+type Position {
+    id: ID!,
+    uuid: String!,
+    title: String!,
+    subtitle: String,
+    description: String,
+    price: Int,
+    discount: Int,
+    inStock: Int!,
+    discount_type: DiscountType,
+    priority: Int!,
+    properties: JSONObject,
+    type: PositionType!
+
+    Media: [Media!]!
+
+    Category: Category
+    Tags: [Tag!]!
+}
+
+input CreatePositionInput {
+    title: String!
+    subtitle: String
+    description: String
+    price: Int
+    discount: Int
+    inStock: Int
+    discount_type: DiscountType
+    priority: Int
+    properties: JSONObject
+    type: PositionType!
+    tags: [ID]
+    CategoryId: ID!
+}
+
+input UpdatePositionInput {
+    title: String
+    subtitle: String
+    description: String
+    price: Int
+    discount: Int
+    inStock: Int
+    discount_type: DiscountType
+    priority: Int
+    properties: JSONObject
+    type: PositionType
+    tags: [ID]
+    CategoryId: ID
+}
+
+input UpdatePositionPatch {
+    filters: JSONObject
+    set: UpdatePositionInput
+    media: JSONObject
+}
+
+input PositionsFilterInput {
+    id: ID,
+    categoryId: ID,
+}
+
+type Mutation {
+    createPosition(input: CreatePositionInput!): Position!
+    deletePosition(id: ID!): Boolean!
+    deletePositions(ids: [ID!]!): Boolean!
+    updatePosition(patch: UpdatePositionPatch!): Boolean!
+}
+
+type Query {
+    position(id: ID!): Position
+    positions(query: String, limit: Int, offset: Int, host: String, categoryId: ID): [Position!]!
+}

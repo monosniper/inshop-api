@@ -1,0 +1,52 @@
+type Filter {
+    id: ID!,
+    slug: String!
+    title: String
+}
+
+type Shop {
+    id: ID!,
+    uuid: String
+    options: JSONObject!
+    userId: ID!,
+    domainId: ID,
+
+    Domain: Domain
+    Modules: [Module!]!
+    Colors: [Color!]!
+    Positions: [Position!]!
+    Categories: [Category!]!
+    Tags: [Tag!]!
+    Filters: [Filter!]!
+    Socialnetworks: [Socialnetwork!]!
+    Custompages: [Custompage!]!
+    Media: [Media!]!
+}
+
+input CreateShopInput {
+    userId: ID!
+    domainId: ID!
+    options: JSONObject!
+}
+
+input UpdateShopInput {
+    domainId: ID!
+    options: JSONObject!
+}
+
+input UpdateShopPatch {
+    filters: JSONObject
+    set: UpdateShopInput
+    media: JSONObject
+}
+
+type Mutation {
+    createShop(input: CreateShopInput!): Shop!
+    deleteShop(id: ID!): Boolean!
+    updateShop(patch: UpdateShopPatch!): Boolean!
+}
+
+type Query {
+    shops(query: String, userId: ID, limit: Int): [Shop!]!
+    shop(host: String!, limit: Int, offset: Int, positions_filter: PositionsFilterInput): Shop
+}

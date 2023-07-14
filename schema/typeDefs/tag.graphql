@@ -1,0 +1,36 @@
+input CreateTagInput {
+    title: String!
+    color: String
+}
+
+input UpdateTagInput {
+    title: String
+    color: String
+}
+
+input UpdateTagPatch {
+    filters: JSONObject
+    set: UpdateTagInput
+    media: JSONObject
+}
+
+
+type Tag {
+    id: ID!,
+    uuid: String!,
+    title: String!,
+    color: String!,
+
+    Media: [Media!]!
+}
+
+type Mutation {
+    createTag(input: CreateTagInput!): Category!
+    deleteTag(id: ID!): Boolean!
+    deleteTags(ids: [ID!]!): Boolean!
+    updateTag(patch: UpdateTagPatch!): Boolean!
+}
+
+type Query {
+    tags(query: String, userId: ID, limit: Int): [Tag!]!
+}

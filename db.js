@@ -18,7 +18,7 @@ const sequelize = new Sequelize(
     'fc404394_newinshop',
     'dSa88-9H+u',
     {
-        host: '185.104.44.127',
+        host: 'fc404394.mysql.tools',
         dialect: 'mysql',
     },
 );
